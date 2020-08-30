@@ -25,7 +25,11 @@ defmodule AuthWeb.UserRegistrationControllerTest do
 
       conn =
         post(conn, Routes.user_registration_path(conn, :create), %{
-          "user" => %{"email" => email, "password" => valid_user_password()}
+          "user" => %{
+            "email" => email,
+            "password" => valid_user_password(),
+            "password_confirmation" => valid_user_password()
+          }
         })
 
       assert get_session(conn, :user_token)
@@ -42,13 +46,18 @@ defmodule AuthWeb.UserRegistrationControllerTest do
     test "render errors for invalid data", %{conn: conn} do
       conn =
         post(conn, Routes.user_registration_path(conn, :create), %{
-          "user" => %{"email" => "with spaces", "password" => "too short"}
+          "user" => %{
+            "email" => "with spaces",
+            "password" => "too short",
+            "password_confirmation" => "does not match"
+          }
         })
 
       response = html_response(conn, 200)
       assert response =~ "<h1>Register</h1>"
       assert response =~ "must have the @ sign and no spaces"
       assert response =~ "should be at least 12 character"
+      assert response =~ "does not match password"
     end
   end
 end

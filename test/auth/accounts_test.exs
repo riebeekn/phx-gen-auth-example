@@ -58,11 +58,17 @@ defmodule Auth.AccountsTest do
     end
 
     test "validates email and password when given" do
-      {:error, changeset} = Accounts.register_user(%{email: "not valid", password: "not valid"})
+      {:error, changeset} =
+        Accounts.register_user(%{
+          email: "not valid",
+          password: "not valid",
+          password_confirmation: "not matching"
+        })
 
       assert %{
                email: ["must have the @ sign and no spaces"],
-               password: ["should be at least 12 character(s)"]
+               password: ["should be at least 12 character(s)"],
+               password_confirmation: ["does not match password"]
              } = errors_on(changeset)
     end
 
@@ -85,7 +91,14 @@ defmodule Auth.AccountsTest do
 
     test "registers users with a hashed password" do
       email = unique_user_email()
-      {:ok, user} = Accounts.register_user(%{email: email, password: valid_user_password()})
+
+      {:ok, user} =
+        Accounts.register_user(%{
+          email: email,
+          password: valid_user_password(),
+          password_confirmation: valid_user_password()
+        })
+
       assert user.email == email
       assert is_binary(user.hashed_password)
       assert is_nil(user.confirmed_at)
