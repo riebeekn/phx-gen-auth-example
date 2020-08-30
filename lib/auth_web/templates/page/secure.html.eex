@@ -1,0 +1,3 @@
+<section class="phx-hero">
+  <h1>This page will only appear if you are authenticated!</h1>
+</section>
