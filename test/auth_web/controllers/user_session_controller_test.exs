@@ -64,6 +64,25 @@ defmodule AuthWeb.UserSessionControllerTest do
       assert response =~ "<h1>Log in</h1>"
       assert response =~ "Invalid e-mail or password"
     end
+
+    test "emits error message when account is not confirmed", %{conn: conn} do
+      user = user_fixture(%{}, confirmed: false)
+
+      conn =
+        post(conn, Routes.user_session_path(conn, :create), %{
+          "user" => %{
+            "email" => user.email,
+            "password" => valid_user_password(),
+            "remember_me" => "true"
+          }
+        })
+
+      response = html_response(conn, 200)
+      assert response =~ "<h1>Log in</h1>"
+
+      assert response =~
+               "Please confirm your email before signing in.  An email confirmation link has been sent to you."
+    end
   end
 
   describe "DELETE /users/log_out" do

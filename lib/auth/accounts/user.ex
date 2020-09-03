@@ -114,4 +114,9 @@ defmodule Auth.Accounts.User do
       add_error(changeset, :current_password, "is not valid")
     end
   end
+
+  @doc """
+  Returns true if the user has confirmed their account, false otherwise
+  """
+  def is_confirmed?(user), do: user.confirmed_at != nil
 end

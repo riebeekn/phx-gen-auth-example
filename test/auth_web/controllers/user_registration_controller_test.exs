@@ -20,7 +20,7 @@ defmodule AuthWeb.UserRegistrationControllerTest do
 
   describe "POST /users/register" do
     @tag :capture_log
-    test "creates account and logs the user in", %{conn: conn} do
+    test "creates account and DOES NOT log the user in", %{conn: conn} do
       email = unique_user_email()
 
       conn =
@@ -32,15 +32,19 @@ defmodule AuthWeb.UserRegistrationControllerTest do
           }
         })
 
-      assert get_session(conn, :user_token)
-      assert redirected_to(conn) =~ "/"
+      refute get_session(conn, :user_token)
+      assert redirected_to(conn) =~ "/users/log_in"
 
-      # Now do a logged in request and assert on the menu
-      conn = get(conn, "/")
-      response = html_response(conn, 200)
-      assert response =~ email
-      assert response =~ "Settings</a>"
-      assert response =~ "Log out</a>"
+      assert flash_messages_contain(
+               conn,
+               "User created successfully.  Please check your email for confirmation instructions."
+             )
+    end
+
+    defp flash_messages_contain(conn, text) do
+      conn
+      |> Phoenix.Controller.get_flash()
+      |> Enum.any?(fn item -> String.contains?(elem(item, 1), text) end)
     end
 
     test "render errors for invalid data", %{conn: conn} do
