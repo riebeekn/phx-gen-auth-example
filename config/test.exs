@@ -23,3 +23,6 @@ config :auth, AuthWeb.Endpoint,
 
 # Print only warnings and errors during test
 config :logger, level: :warn
+
+# Bamboo test configuration
+config :auth, Auth.Mailer, adapter: Bamboo.TestAdapter
