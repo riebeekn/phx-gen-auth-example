@@ -36,6 +36,15 @@ defmodule Auth.AccountsTest do
                Accounts.get_user_by_email_and_password(user.email, valid_user_password())
     end
 
+    test "does not return the user if they have been blocked" do
+      user = user_fixture()
+
+      Accounts.block_user(user)
+
+      assert {:error, :user_blocked} ==
+               Accounts.get_user_by_email_and_password(user.email, valid_user_password())
+    end
+
     test "returns the user if the email and password are valid" do
       %{id: id} = user = user_fixture()
 
@@ -498,6 +507,43 @@ defmodule Auth.AccountsTest do
   describe "inspect/2" do
     test "does not include password" do
       refute inspect(%User{password: "123456"}) =~ "password: \"123456\""
+    end
+  end
+
+  describe "block_user/1" do
+    setup do
+      user = user_fixture()
+      token = Accounts.generate_user_session_token(user)
+
+      %{
+        user: user,
+        token: token
+      }
+    end
+
+    test "sets the is_blocked flag to true and removes any tokens belonging to the user", %{
+      user: user,
+      token: token
+    } do
+      assert {:ok, user} = Accounts.block_user(user)
+
+      assert user.is_blocked == true
+      refute Accounts.get_user_by_session_token(token)
+    end
+  end
+
+  describe "unblock_user/1" do
+    setup do
+      {:ok, user} =
+        user_fixture()
+        |> Accounts.block_user()
+
+      %{user: user}
+    end
+
+    test "sets the is_blocked flag to false", %{user: user} do
+      assert {:ok, user} = Accounts.unblock_user(user)
+      assert user.is_blocked == false
     end
   end
 end

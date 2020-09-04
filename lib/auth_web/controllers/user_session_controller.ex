@@ -17,6 +17,11 @@ defmodule AuthWeb.UserSessionController do
       {:error, :bad_username_or_password} ->
         render(conn, "new.html", error_message: "Invalid e-mail or password")
 
+      {:error, :user_blocked} ->
+        render(conn, "new.html",
+          error_message: "Your account has been locked, please contact an administrator."
+        )
+
       {:error, :not_confirmed} ->
         user = Accounts.get_user_by_email(email)
 

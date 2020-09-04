@@ -8,6 +8,7 @@ defmodule Auth.Accounts.User do
     field :password, :string, virtual: true
     field :hashed_password, :string
     field :confirmed_at, :naive_datetime
+    field :is_blocked, :boolean, default: false
 
     timestamps()
   end
@@ -89,6 +90,14 @@ defmodule Auth.Accounts.User do
   end
 
   @doc """
+  A user changeset for blocking / unblocking a user.
+  """
+  def block_user_changeset(user, should_block?) do
+    user
+    |> cast(%{is_blocked: should_block?}, [:is_blocked])
+  end
+
+  @doc """
   Verifies the password.
 
   If there is no user or the user doesn't have a password, we call
@@ -119,4 +128,9 @@ defmodule Auth.Accounts.User do
   Returns true if the user has confirmed their account, false otherwise
   """
   def is_confirmed?(user), do: user.confirmed_at != nil
+
+  @doc """
+  Returns true if the user has been blocked, false otherwise
+  """
+  def is_blocked?(user), do: user.is_blocked
 end
