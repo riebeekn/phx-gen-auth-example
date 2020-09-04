@@ -1,20 +1,5 @@
-# Auth
+# Phoenix authentication with Phx.Gen.Auth
 
-To start your Phoenix server:
+A simple Phoenix application demonstrating authentication with [Phx.Gen.Auth](https://github.com/aaronrenner/phx_gen_auth).
 
-  * Install dependencies with `mix deps.get`
-  * Create and migrate your database with `mix ecto.setup`
-  * Install Node.js dependencies with `npm install` inside the `assets` directory
-  * Start Phoenix endpoint with `mix phx.server`
-
-Now you can visit [`localhost:4000`](http://localhost:4000) from your browser.
-
-Ready to run in production? Please [check our deployment guides](https://hexdocs.pm/phoenix/deployment.html).
-
-## Learn more
-
-  * Official website: https://www.phoenixframework.org/
-  * Guides: https://hexdocs.pm/phoenix/overview.html
-  * Docs: https://hexdocs.pm/phoenix
-  * Forum: https://elixirforum.com/c/phoenix-forum
-  * Source: https://github.com/phoenixframework/phoenix
+For more information see: [https://experimentingwithcode.com/phoenix-authentication-with-phx-gen-auth-part-1/](https://experimentingwithcode.com/phoenix-authentication-with-phx-gen-auth-part-1/)
